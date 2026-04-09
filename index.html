@@ -428,13 +428,12 @@
     <section class="hero teaser">
         <div class="container is-max-desktop">
           <div class="hero-body">
-            <img src="./static/images/teaser.png"
+            <img src="./static/images/teaser_figure.png"
               class="interpolation-image"
               alt="Interpolate start reference image."/>
             <h2 class="subtitle has-text-centered">
-                Visualized in 3D, <span style="color:rgb(0, 176, 0, 0.6);">SPIDER</span> jointly predicts pixel-wise warps and feature descriptors even across large viewpoint changes, unifying
-                the appearance sensitivity of <span style="color:rgb(255, 0, 0);">RoMa</span>  and the geometric consistency of <span style="color:rgb(0, 0, 176);">Aerial-MASt3R</span>  within a single framework. This enables accurate
-                camera calibration and pose estimation, achieving and surpassing State-Of-the-Art performance on challenging benchmarks.
+                Independent diffusion refinement (DifiX3D+) processes each view separately, leading to inconsistent geometry across views (see table; bottom panel and highlighted regions above). 
+                SyncFix instead refines all views jointly, enforcing cross-view agreement during denoising and producing stable 3D structure.
             </h2>
           </div>
       
@@ -450,14 +449,12 @@
               <h2 class="title is-3">Abstract</h2>
               <div class="content has-text-justified">
                 <p>
-                    Reliable image correspondences form the foundation of vision-based spatial perception, enabling recovery of 3D structure and camera poses. 
-                    However, unconstrained feature matching across domains such as aerial, indoor, and outdoor scenes remains challenging due to large variations in appearance, scale and viewpoint. 
-                    Feature matching has been conventionally formulated as a 2D-to-2D problem; however, recent 3D foundation models provides spatial feature matching properties based on two-view geometry. 
-                    While powerful, we observe that these spatially coherent matches often concentrate on dominant planar regions, e.g., walls or ground surfaces, while being less sensitive to fine-grained geometric details, particularly under large viewpoint changes. 
-                    To better understand these trade-offs, we first perform linear probe experiments to evaluate the performance of various vision foundation models for image matching. 
-                    Building on these insights, we introduce SPIDER, a universal feature matching framework that integrates a shared feature extraction backbone with two specialized network heads for estimating both 2D-based and 3D-based correspondences from coarse to fine. 
-                    Finally, we introduce an image-matching evaluation benchmark that focuses on unconstrained scenarios with large baselines. 
-                    SPIDER significantly outperforms SoTA methods, demonstrating its strong ability as a universal image-matching method.
+                    We present <strong>SyncFix</strong>, a framework that enforces cross-view consistency during the diffusion-based refinement of reconstructed scenes. 
+                    SyncFix formulates refinement as a joint latent bridge matching problem, synchronizing distorted and clean representations across multiple views to fix the semantic and geometric inconsistencies. 
+                    This means SyncFix learns a joint conditional over multiple views to enforce consistency throughout the denoising trajectory. 
+                    Our training is done only on image pairs, but it generalizes naturally to an arbitrary number of views during inference. Moreover, reconstruction quality improves with additional views, with diminishing returns at higher view counts. 
+                    Qualitative and quantitative results demonstrate that SyncFix consistently generates high-quality reconstructions and surpasses current state-of-the-art baselines, even in the absence of clean reference images. 
+                    SyncFix achieves even higher fidelity when sparse references are available.
                 </p>
               </div>
             </div>
@@ -473,14 +470,13 @@
               <h2 class="title is-3">SPIDER</h2>
             </div>
                 <p>
-                    Given two input images $I^A$ and $I^B$, our method builds on 3D VFM features and ConvNet features to combine
-                    semantic alignment and geometric consistency. A dual-head architecture operates in a coarse-to-fine manner: (1) the descriptor head
-                    aggregates multi-scale features through attention-based Fusion Gates to produce geometry-aware descriptors and confidence maps; (2) the
-                    warp head predicts dense correspondence fields and confidence maps, progressively refined across multiple scales. Final correspondences
-                    are sampled from the predicted warp and fastNN.
-      
+                    Distorted renderings from multiple viewpoints $x_D$ are encoded into latent representations and transported toward clean targets $x_{GT}$ using latent bridge matching. 
+                    SyncFix learns a joint latent bridge over multiple views, coupling latent trajectories through cross-view attention to enforce multi-view consistency during refinement. 
+                    The model is trained using view pairs ($N=2$) but generalizes to an arbitrary number of views at inference. 
+                    Optional reference images can be provided to guide refinement. 
+                    Here $z_D$ denotes distorted latents, $z_{GT}$ clean target latents, and $z_t = (1-t)z_D + t z_{GT}$ the bridge interpolation between them.
                 </p>
-                <img src="./static/images/spider_net.png" style="margin-top: 20px;"/>
+                <img src="./static/images/SyncFix.png" style="margin-top: 20px;"/>
             </div>
           </div>
         </div>
