@@ -363,7 +363,7 @@
                         <h1 class="title is-2 publication-title" style="margin-bottom:0rem">
                             <img src="./static/images/SyncFix_icon.png" alt="ICON"
                                 style="max-width: 96px; vertical-align: middle;">
-                            <strong>SPIDER: Spatial Image CorresponDence Estimator for Robust Calibration</strong>
+                            <strong>SyncFix: Fixing 3D Reconstructions via Multi-View Synchronization</strong>
                         </h1>
                     </div>
                 </div>
@@ -395,7 +395,7 @@
                         <div class="column has-text-centered">
                             <div class="publication-links">
                                 <span class="link-block">
-                                    <a href="https://www.arxiv.org/abs/2511.17750" class="external-link button is-normal is-rounded is-dark">
+                                    <a href="https://github.com/Deming77/SyncFix" class="external-link button is-normal is-rounded is-dark">
                                         <span class="icon">
                                             <i class="ai ai-arxiv"></i>
                                         </span>
@@ -406,7 +406,7 @@
 
 
                                 <span class="link-block">
-                                    <a href="https://github.com/Zhimin00/spider" class="external-link button is-normal is-rounded is-dark">
+                                    <a href="https://github.com/Deming77/SyncFix" class="external-link button is-normal is-rounded is-dark">
                                         <span class="icon">
                                             <i class="fab fa-github"></i>
                                         </span>
@@ -467,7 +467,7 @@
           <div class="columns is-centered">
             <div class="column is-four-fifths">
               <div class="columns is-centered has-text-centered">
-              <h2 class="title is-3">SPIDER</h2>
+              <h2 class="title is-3">SyncFix</h2>
             </div>
                 <p>
                     Distorted renderings from multiple viewpoints $x_D$ are encoded into latent representations and transported toward clean targets $x_{GT}$ using latent bridge matching. 
@@ -488,19 +488,16 @@
             <div class="column is-four-fifths">
       
               <div class="columns is-centered has-text-centered">
-                <h2 class="title is-4">Evaluation on In-domain Benchmarks and Zero-Shot Benchmark</h2>
+                <h2 class="title is-4">Evaluation on DL3DV and Nerfbusters Benchmark</h2>
               </div>
               <p>
-                We evaluate our method on three two-view geometry datasets covering outdoor, indoor, and aerial-to-ground scenarios and further test generalization under a zero-shot setting, where all test datasets are unseen during training. 
-                RoMa, which is only trained and validated on MegaDepth, generalizes worse on ZEB. Our method achieves strong zero-shot performance, achieving <b>+5.7</b>, <b>+6.3</b>, <b>+2.3</b> in MUL, SCE, ICL compared to the next best, 
-                and an overall <b>+5.7</b> compared to Aerial-MAST3R, which SPIDER uses as for its backbone.
+                SyncFix exceeds Difix3D+ by 0.77 dB on PSNR and reduces LPIPS by 0.038 on DL3DV test set, similar for their without-reference variants. Notably, SyncFix decreases DreamSim score by 27 percent compared to Difix3D+ and FID by more than four times compared to the 3DGS renderings. SyncFix achieves better PSNR and CVSC than Difix3D+ on the Nerfbusters dataset.         
               </p>
               <figure class="image has-text-centered" style="margin-top: 20px;">
                 <img src="./static/images/zeb.png" style="display: inline-block; margin: 0 auto;" />
                 <figcaption style="margin-top: 1px; font-size: 0.9rem;">
-                  SoTA comparison on existing image matching benchmarks, measured by AUC@5. G.R + A.M denotes
-                  the concatenation of GIM-RoMa and Aerial-MASt3R. The best result is marked with <span style="color:rgb(246, 144, 144);">best</span>
-                  and <span style="color:rgb(246, 197, 145);">second best</span>.
+                    Quantitative comparison refining sparse-view 3D Gaussian Splatting reconstruction renderings.
+                    SyncFix improves reconstruction quality and cross-view semantic consistency over prior generative refinement methods. <sup>&dagger;</sup> indicates no reference views during training. &uarr; indicates higher-is-better and &darr; indicates lower-is-better.
                 </figcaption>
               </figure>
               
@@ -515,32 +512,22 @@
             <div class="column is-four-fifths">
       
               <div class="columns is-centered has-text-centered">
-                <h2 class="title is-4">Unconstrained Evaluation</h2>
+                <h2 class="title is-4">Visualizations</h2>
               </div>
               <p>
-                We collected images from four distinct scenes to evaluate matching robustness in unconstrained environments: one synthetic city scene with multiple symmetric buildings (\emph{Urban}),
-                 one real scene from the ULTRRA Challenge on a cluster of warehouses (\emph{Warehouses}), and two real scenes on a single campus building (\emph{Campus 1 and 2}). 
-                 All scenes contain complex building structures; while only \emph{Urban} has perfect pose groundtruth, all real scenes are calibrated using COLMAP constrained by RTK-grade GPS.
-              </p>
+                Difix3D+ mitigates the noises and sharpens the renderings. However, Difix3D+ struggles in multi-view context, i.e., changing geometry of the objects and overfitting to view-dependent artifacts. 
+                In comparison, our method reduces artifacts globally through a joint refinement of the renderings and maintains a more 3D-consistent geometry of the scene.              </p>
               <figure class="image has-text-centered" style="margin-top: 10px;">
-                <img src="./static/images/vis_scenes.png" style="width: 60%; display: inline-block; margin: 0 auto;" />
-                <figcaption style="margin-top: 1px; font-size: 0.9rem;">
-                  Visualization of camera positions for four multi-elevation scenes collected in unconstrained scenarios.
-                </figcaption>
+                <img src="./static/images/DL3DV_vis.png" style="width: 60%; display: inline-block; margin: 0 auto;" />
               </figure>
             <br>
               <p>
-                We evaluate using unconstrained matching with camera pose error AUC@20. SPIDER achieves the highest average performance. VGGT and MASt3R failed on this aerial-to-ground benchmark. 
-                Again, RoMa demonstrates impressive accuracy in \emph{Campus 1 and 2} aerial-to-ground matching without training on Aerial-MegaDepth. However, in \emph{Urban}'s ground-to-ground matching,
-                MASt3R is much better than RoMa, demonstrating robustness to visual ambiguities in geometry-based matching. Even in aerial-to-ground scenarios, RoMa fails in multi-building scenarios in 
-                \emph{Urban and Warehouses} due to visual ambiguities from similar buildings. VGGT exhibits severe out-of-domain failures, likely because its feedforward camera pose prediction is 
-                domain-specific and is not generalizable enough compared to COLMAP.
+                3DGS reconstructions contain severe artifacts and geometric distortions.
+                Difix3D+ improves the appearance of individual renderings but struggles to extrapolate to unseen regions and often produces unstable structures across views.
+                In contrast, SyncFix generates plausible reconstructions that remain consistent across viewpoints, recovering coherent object geometry and scene structure.
               </p>
               <figure class="image has-text-centered" style="margin-top: 10px;">
-                <img src="./static/images/unconstrained.png" style="width: 60%; display: inline-block; margin: 0 auto;" />
-                <figcaption style="margin-top: 1px; font-size: 0.9rem;">
-                    SoTA comparison on two-view geometry. For <em>Urban</em> scene, both Aerial-Ground (A+G) and Ground-Ground (G+G) pairs are evaluated.
-                </figcaption>
+                <img src="./static/images/NeRFbusters_vis.png" style="width: 60%; display: inline-block; margin: 0 auto;" />
               </figure>
 
             </div>
@@ -548,22 +535,6 @@
         </div>
       </section>
 
-    <section class="section">
-        <div class="container is-max-desktop">
-        <div class="columns is-centered">
-            <div class="column is-four-fifths">
-            <div class="columns is-centered has-text-centered">
-            <h2 class="title is-4">Visualization</h2>
-            </div>
-            <p> Visual Comparison under unconstrained settings. Image pattern-driven methods, e.g. RoMa, finds diverse matches
-                across many planes; however, matches may be false negatives on two sides of the building. Geometry-driven methods are better
-                at matching planes. This can lead to homography if a confident plane dominates, e.g., when Aerial-MASt3R matches the wrong signs in
-                Urban with high confidence. SPIDER combines both approaches and produces diverse and accurate matches.</p>
-            <img src="./static/images/vis_example.png"/>
-            
-        </div>
-        </div>
-    </section>
 
     <!-- <section class="section">
         <div class="container is-max-desktop">
@@ -655,11 +626,13 @@
 
                     <h2 class="title">BibTeX</h2>
                     <pre><code>
-    @article{shao2025spider,
+
+                        placeholder
+    <!-- @article{shao2025spider,
         title={SPIDER: Spatial Image CorresponDence Estimator for Robust Calibration},
         author={Shao, Zhimin and Yadav, Abhay and Chellappa, Rama and Peng, Cheng},
         journal={arXiv preprint arXiv:2511.17750},
-        year={2025}
+        year={2025} -->
         }
                     </code></pre>
 
