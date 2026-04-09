@@ -1,490 +1,684 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <meta name="description"
-        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
-  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nerfies: Deformable Neural Radiance Fields</title>
+    <meta charset="utf-8">
+    <meta name="description" content="An image matching framework for image pairs from wide baselines.">
+    <meta name="keywords" content="SPIDER">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SPIDER: Spatial Image CorresponDence Estimator for Robust Calibration</title>
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
+    <link rel="icon" type="image/x-icon" href="static/images/spider_icon512x512.png">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+        function gtag() {
+            dataLayer.push(arguments);
+        }
 
-    gtag('js', new Date());
+        gtag('js', new Date());
 
-    gtag('config', 'G-PYVRSFMDRL');
-  </script>
+        gtag('config', 'G-PYVRSFMDRL');
+    </script>
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+    <!-- <meta property="og:image" content="https://cut3r.github.io/static/images/icon.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SPIDER: Spatial Image CorresponDence Estimator for Robust Calibration">
+    <meta name="twitter:description"
+        content="An image matching framework for image pairs from wide baselines.">
+    <meta name="twitter:image" content="https://cut3r.github.io/static/images/icon.png"> -->
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,600|Noto+Sans:400,600|Castoro:400,600"
         rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/modern-normalize@3.0.1/modern-normalize.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/tabler-icons-outline.min.css"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.4/dist/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@latest/dist/model-viewer.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script defer src="./static/js/bulma-carousel.min.js"></script>
+    <script defer src="./static/js/index.js"></script>
+    <script defer src="./static/js/lazy.js"></script>
+    <script>
+        MathJax = {
+          tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+        };
+      </script>
+      <script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+      </script>
 
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="./static/images/favicon.svg">
+    <style>
+        .center-image {
+            display: block;
+            margin: 0 auto;
+        }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
+
+        .blend-img-item {
+            background: #f5f5f5;
+        }
+
+        .item {
+            margin: 10px;
+        }
+
+        .blend-img-background {
+            mix-blend-mode: multiply;
+        }
+
+        #interactive {
+            position: relative;
+            display: inline-block;
+            width: 768px;
+            aspect-ratio: 16/9;
+            max-width: 100%;
+            border: 2px solid #fff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 0 4px #000;
+
+        }
+
+        #interactive canvas,
+        #interactive #glfailed,
+        #interactive #loading {
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        #interactive #glfailed {
+            color: #f88;
+            background: black;
+            display: none;
+        }
+
+        #interactive #loading {
+            color: #000;
+            font-size: 32px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.8);
+            display: none;
+        }
+
+        .iframe-container {
+            width: 50%;
+            max-width: 32em;
+        }
+
+        .vframe {
+            border-radius: 0.5em;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 32 / 27.5;
+            max-width: 32em;
+            max-height: 27.5em;
+            border: none;
+            box-shadow: 0 0 1em 0em rgba(0, 0, 0, 0.15);
+        }
+
+        .large-vframe {
+            border-radius: 0.5em;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 32 / 18;
+            max-width: 64em;
+            max-height: 36em;
+            border: none;
+            box-shadow: 0 0 1em 0em rgba(0, 0, 0, 0.15);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .modelviewer-container {
+            width: 50%;
+            max-width: 32em;
+        }
+
+        model-viewer {
+            border-radius: 0.5em;
+            width: 100%;
+            max-width: 32em;
+            max-height: 27.5em;
+            height: auto;
+            aspect-ratio: 32 / 27.5;
+            border: none;
+            box-shadow: 0 0 1em 0em rgba(0, 0, 0, 0.15);
+        }
+
+        .siframe-class {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            gap: 1vw;
+            padding: 1vw;
+            align-items: start;
+        }
+
+        .siframe-class .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1vw;
+            flex: 1 0 40%;
+            max-width: 384px;
+        }
+
+        .siframe-class .image-grid img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .siframe-class .iframe-container {
+            flex: 1 0 60%;
+            max-width: 640px;
+        }
+
+        .siframe-class iframe {
+            width: 100%;
+            border-radius: 0.5em;
+            max-width: 640px;
+            height: auto;
+            aspect-ratio: 5 / 4;
+            border: none;
+            box-shadow: 0 0 1em 0em rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+
+            .large-vframe {
+                width: 100%;
+            }
+
+            .iframe-container {
+                width: 100%;
+            }
+
+            model-viewer {
+                max-width: 100%;
+                margin: 0 auto;
+            }
+        }
+
+        .load img {
+            width: 100px;
+            height: 70px;
+            object-fit: cover;
+            margin: 4px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 4px #888;
+            border-radius: 6px;
+            vertical-align: bottom;
+        }
+
+        .load img:active {
+            box-shadow: 0 0 4px #000;
+            opacity: .8;
+        }
+
+        .megabuttons {
+            position: absolute;
+            left: 5px;
+            bottom: 5px;
+            text-transform: uppercase;
+            text-align: left;
+        }
+
+        nav {
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            width: 100%;
+            gap: 10px;
+        }
+
+        nav ul li {
+            flex: 1;
+            display: flex;
+            margin: 0;
+        }
+
+        nav ul li a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+            color: #363636;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-height: 50px;
+            flex-grow: 1;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+
+        nav ul li a:hover {
+            background-color: #e4e4e4;
+            transform: scale(1.05);
+        }
+
+        nav ul li a:active {
+            background-color: #d3d3d3;
+            transform: scale(0.95);
+        }
+
+        nav ul li a.active {
+            background-color: #cccccc; /* Change color to indicate active tab */
+            color: #000000; /* Optional: Change text color if needed */
+        }
+
+
+        .dynamic-section {
+            display: none;
+            padding: 1rem 0;
+        }
+
+
+
+        .grid-container-2x6 {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(2, auto);
+            gap: 10px;
+            padding: 20px;
+            max-width: 80%;
+            margin: auto;
+        }
+
+        .grid-container-2x6 img {
+            width: 100%;
+            height: auto;
+        }
+
+        .grid-container-1x6 {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(1, auto);
+            gap: 10px;
+            padding: 20px;
+            max-width: 80%;
+            margin: auto;
+        }
+
+        .grid-container-1x6 img {
+            width: 100%;
+            height: auto;
+        }
+
+        .panel-style {
+            background-color: #fafafa;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+    </style>
+    
 </head>
+
 <body>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://keunhong.com">
-      <span class="icon">
-          <i class="fas fa-home"></i>
-      </span>
-      </a>
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container is-max-desktop">
+                <div class="columns is-centered" style="margin-bottom: 0em">
+                    <div class="column is-max-desktop has-text-centered">
+                        <h1 class="title is-2 publication-title" style="margin-bottom:0rem">
+                            <img src="./static/images/spider_icon.png" alt="ICON"
+                                style="max-width: 96px; vertical-align: middle;">
+                            <strong>SPIDER: Spatial Image CorresponDence Estimator for Robust Calibration</strong>
+                        </h1>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column is-four-fifths has-text-centered">
+                        <div class="is-size-4 publication-authors">
+                            <span class="author-block">
+                                <a href="https://scholar.google.com/citations?user=CARGU-8AAAAJ&hl=zh-CN">Zhimin Shao</a><sup>1</sup></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="author-block">
+                                <a href="https://scholar.google.com/citations?user=pbRu-GQAAAAJ&hl=en">Abhay Yadav</a><sup>1</sup>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                            <span class="author-block">
+                                <a href="https://engineering.jhu.edu/faculty/rama-chellappa/">Rama Chellappa</a>
+                                <sup>1</sup>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                            <span class="author-block">
+                                <a href="https://sites.google.com/view/cheng-peng/home">Cheng Peng</a><sup>1</sup>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                        </div>
 
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
-          More Research
-        </a>
-        <div class="navbar-dropdown">
-          <a class="navbar-item" href="https://hypernerf.github.io">
-            HyperNeRF
-          </a>
-          <a class="navbar-item" href="https://nerfies.github.io">
-            Nerfies
-          </a>
-          <a class="navbar-item" href="https://latentfusion.github.io">
-            LatentFusion
-          </a>
-          <a class="navbar-item" href="https://photoshape.github.io">
-            PhotoShape
-          </a>
-        </div>
-      </div>
-    </div>
+                        <div class="is-size-4 publication-authors">
+                            <span class="author-block"><sup>1</sup>Johns Hopkins University </span>
+                        </div>
 
-  </div>
-</nav>
+                        <div class="column has-text-centered">
+                            <div class="publication-links">
+                                <span class="link-block">
+                                    <a href="https://www.arxiv.org/abs/2511.17750" class="external-link button is-normal is-rounded is-dark">
+                                        <span class="icon">
+                                            <i class="ai ai-arxiv"></i>
+                                        </span>
+                                        <span>arXiv</span>
+                                    </a>
+                                </span>
+                                <!-- Video Link. -->
 
 
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Nerfies: Deformable Neural Radiance Fields</h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://keunhong.com">Keunhong Park</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://utkarshsinha.com">Utkarsh Sinha</a><sup>2</sup>,</span>
-            <span class="author-block">
-              <a href="https://jonbarron.info">Jonathan T. Barron</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="http://sofienbouaziz.com">Sofien Bouaziz</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://www.danbgoldman.com">Dan B Goldman</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://homes.cs.washington.edu/~seitz/">Steven M. Seitz</a><sup>1,2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="http://www.ricardomartinbrualla.com">Ricardo Martin-Brualla</a><sup>2</sup>
-            </span>
-          </div>
+                                <span class="link-block">
+                                    <a href="https://github.com/Zhimin00/spider" class="external-link button is-normal is-rounded is-dark">
+                                        <span class="icon">
+                                            <i class="fab fa-github"></i>
+                                        </span>
+                                        <span>Code</span>
+                                    </a>
+                                </span>
 
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>University of Washington,</span>
-            <span class="author-block"><sup>2</sup>Google Research</span>
-          </div>
 
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a href="https://arxiv.org/pdf/2011.12948"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-              <span class="link-block">
-                <a href="https://arxiv.org/abs/2011.12948"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
-              <!-- Video Link. -->
-              <span class="link-block">
-                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-youtube"></i>
-                  </span>
-                  <span>Video</span>
-                </a>
-              </span>
-              <!-- Code Link. -->
-              <span class="link-block">
-                <a href="https://github.com/google/nerfies"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                  </a>
-              </span>
-              <!-- Dataset Link. -->
-              <span class="link-block">
-                <a href="https://github.com/google/nerfies/releases/tag/0.1"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="far fa-images"></i>
-                  </span>
-                  <span>Data</span>
-                  </a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </section>
 
+    <section class="hero teaser">
+        <div class="container is-max-desktop">
+          <div class="hero-body">
+            <img src="./static/images/teaser.png"
+              class="interpolation-image"
+              alt="Interpolate start reference image."/>
+            <h2 class="subtitle has-text-centered">
+                Visualized in 3D, <span style="color:rgb(0, 176, 0, 0.6);">SPIDER</span> jointly predicts pixel-wise warps and feature descriptors even across large viewpoint changes, unifying
+                the appearance sensitivity of <span style="color:rgb(255, 0, 0);">RoMa</span>  and the geometric consistency of <span style="color:rgb(0, 0, 176);">Aerial-MASt3R</span>  within a single framework. This enables accurate
+                camera calibration and pose estimation, achieving and surpassing State-Of-the-Art performance on challenging benchmarks.
+            </h2>
+          </div>
+      
+      
+        </div>
+      </section>
+
+      <section class="section hero is-light">
+        <div class="container is-max-desktop">
+          <!-- Abstract. -->
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">Abstract</h2>
+              <div class="content has-text-justified">
+                <p>
+                    Reliable image correspondences form the foundation of vision-based spatial perception, enabling recovery of 3D structure and camera poses. 
+                    However, unconstrained feature matching across domains such as aerial, indoor, and outdoor scenes remains challenging due to large variations in appearance, scale and viewpoint. 
+                    Feature matching has been conventionally formulated as a 2D-to-2D problem; however, recent 3D foundation models provides spatial feature matching properties based on two-view geometry. 
+                    While powerful, we observe that these spatially coherent matches often concentrate on dominant planar regions, e.g., walls or ground surfaces, while being less sensitive to fine-grained geometric details, particularly under large viewpoint changes. 
+                    To better understand these trade-offs, we first perform linear probe experiments to evaluate the performance of various vision foundation models for image matching. 
+                    Building on these insights, we introduce SPIDER, a universal feature matching framework that integrates a shared feature extraction backbone with two specialized network heads for estimating both 2D-based and 3D-based correspondences from coarse to fine. 
+                    Finally, we introduce an image-matching evaluation benchmark that focuses on unconstrained scenarios with large baselines. 
+                    SPIDER significantly outperforms SoTA methods, demonstrating its strong ability as a universal image-matching method.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <video id="teaser" autoplay muted loop playsinline height="100%">
-        <source src="./static/videos/teaser.mp4"
-                type="video/mp4">
-      </video>
-      <h2 class="subtitle has-text-centered">
-        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
-        free-viewpoint
-        portraits.
-      </h2>
-    </div>
-  </div>
-</section>
-
-
-<section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-steve">
-          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/steve.mp4"
-                    type="video/mp4">
-          </video>
+      </section>
+      
+      <section class="section">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column is-four-fifths">
+              <div class="columns is-centered has-text-centered">
+              <h2 class="title is-3">SPIDER</h2>
+            </div>
+                <p>
+                    Given two input images $I^A$ and $I^B$, our method builds on 3D VFM features and ConvNet features to combine
+                    semantic alignment and geometric consistency. A dual-head architecture operates in a coarse-to-fine manner: (1) the descriptor head
+                    aggregates multi-scale features through attention-based Fusion Gates to produce geometry-aware descriptors and confidence maps; (2) the
+                    warp head predicts dense correspondence fields and confidence maps, progressively refined across multiple scales. Final correspondences
+                    are sampled from the predicted warp and fastNN.
+      
+                </p>
+                <img src="./static/images/spider_net.png" style="margin-top: 20px;"/>
+            </div>
+          </div>
         </div>
-        <div class="item item-chair-tp">
-          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/chair-tp.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-shiba">
-          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/shiba.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-fullbody">
-          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/fullbody.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-blueshirt">
-          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/blueshirt.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-mask">
-          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/mask.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-coffee">
-          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/coffee.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-toby">
-          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/toby2.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
-
-<section class="section">
-  <div class="container is-max-desktop">
-    <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            We present the first method capable of photorealistically reconstructing a non-rigidly
-            deforming scene using photos/videos captured casually from mobile phones.
-          </p>
-          <p>
-            Our approach augments neural radiance fields
-            (NeRF) by optimizing an
-            additional continuous volumetric deformation field that warps each observed point into a
-            canonical 5D NeRF.
-            We observe that these NeRF-like deformation fields are prone to local minima, and
-            propose a coarse-to-fine optimization method for coordinate-based models that allows for
-            more robust optimization.
-            By adapting principles from geometry processing and physical simulation to NeRF-like
-            models, we propose an elastic regularization of the deformation field that further
-            improves robustness.
-          </p>
-          <p>
-            We show that <span class="dnerf">Nerfies</span> can turn casually captured selfie
-            photos/videos into deformable NeRF
-            models that allow for photorealistic renderings of the subject from arbitrary
-            viewpoints, which we dub <i>"nerfies"</i>. We evaluate our method by collecting data
-            using a
-            rig with two mobile phones that take time-synchronized photos, yielding train/validation
-            images of the same pose at different viewpoints. We show that our method faithfully
-            reconstructs non-rigidly deforming scenes and reproduces unseen views with high
-            fidelity.
-          </p>
+      <section class="section">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column is-four-fifths">
+      
+              <div class="columns is-centered has-text-centered">
+                <h2 class="title is-4">Evaluation on In-domain Benchmarks and Zero-Shot Benchmark</h2>
+              </div>
+              <p>
+                We evaluate our method on three two-view geometry datasets covering outdoor, indoor, and aerial-to-ground scenarios and further test generalization under a zero-shot setting, where all test datasets are unseen during training. 
+                RoMa, which is only trained and validated on MegaDepth, generalizes worse on ZEB. Our method achieves strong zero-shot performance, achieving <b>+5.7</b>, <b>+6.3</b>, <b>+2.3</b> in MUL, SCE, ICL compared to the next best, 
+                and an overall <b>+5.7</b> compared to Aerial-MAST3R, which SPIDER uses as for its backbone.
+              </p>
+              <figure class="image has-text-centered" style="margin-top: 20px;">
+                <img src="./static/images/zeb.png" style="display: inline-block; margin: 0 auto;" />
+                <figcaption style="margin-top: 1px; font-size: 0.9rem;">
+                  SoTA comparison on existing image matching benchmarks, measured by AUC@5. G.R + A.M denotes
+                  the concatenation of GIM-RoMa and Aerial-MASt3R. The best result is marked with <span style="color:rgb(246, 144, 144);">best</span>
+                  and <span style="color:rgb(246, 197, 145);">second best</span>.
+                </figcaption>
+              </figure>
+              
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <!--/ Abstract. -->
+      </section>
 
-    <!-- Paper video. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Video</h2>
-        <div class="publication-video">
-          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
-                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <section class="section">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column is-four-fifths">
+      
+              <div class="columns is-centered has-text-centered">
+                <h2 class="title is-4">Unconstrained Evaluation</h2>
+              </div>
+              <p>
+                We collected images from four distinct scenes to evaluate matching robustness in unconstrained environments: one synthetic city scene with multiple symmetric buildings (\emph{Urban}),
+                 one real scene from the ULTRRA Challenge on a cluster of warehouses (\emph{Warehouses}), and two real scenes on a single campus building (\emph{Campus 1 and 2}). 
+                 All scenes contain complex building structures; while only \emph{Urban} has perfect pose groundtruth, all real scenes are calibrated using COLMAP constrained by RTK-grade GPS.
+              </p>
+              <figure class="image has-text-centered" style="margin-top: 10px;">
+                <img src="./static/images/vis_scenes.png" style="width: 60%; display: inline-block; margin: 0 auto;" />
+                <figcaption style="margin-top: 1px; font-size: 0.9rem;">
+                  Visualization of camera positions for four multi-elevation scenes collected in unconstrained scenarios.
+                </figcaption>
+              </figure>
+            <br>
+              <p>
+                We evaluate using unconstrained matching with camera pose error AUC@20. SPIDER achieves the highest average performance. VGGT and MASt3R failed on this aerial-to-ground benchmark. 
+                Again, RoMa demonstrates impressive accuracy in \emph{Campus 1 and 2} aerial-to-ground matching without training on Aerial-MegaDepth. However, in \emph{Urban}'s ground-to-ground matching,
+                MASt3R is much better than RoMa, demonstrating robustness to visual ambiguities in geometry-based matching. Even in aerial-to-ground scenarios, RoMa fails in multi-building scenarios in 
+                \emph{Urban and Warehouses} due to visual ambiguities from similar buildings. VGGT exhibits severe out-of-domain failures, likely because its feedforward camera pose prediction is 
+                domain-specific and is not generalizable enough compared to COLMAP.
+              </p>
+              <figure class="image has-text-centered" style="margin-top: 10px;">
+                <img src="./static/images/unconstrained.png" style="width: 60%; display: inline-block; margin: 0 auto;" />
+                <figcaption style="margin-top: 1px; font-size: 0.9rem;">
+                    SoTA comparison on two-view geometry. For <em>Urban</em> scene, both Aerial-Ground (A+G) and Ground-Ground (G+G) pairs are evaluated.
+                </figcaption>
+              </figure>
+
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <!--/ Paper video. -->
-  </div>
-</section>
+      </section>
 
-
-<section class="section">
-  <div class="container is-max-desktop">
-
-    <div class="columns is-centered">
-
-      <!-- Visual Effects. -->
-      <div class="column">
-        <div class="content">
-          <h2 class="title is-3">Visual Effects</h2>
-          <p>
-            Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
-            would be impossible without nerfies since it would require going through a wall.
-          </p>
-          <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/dollyzoom-stacked.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-      <!--/ Visual Effects. -->
-
-      <!-- Matting. -->
-      <div class="column">
-        <h2 class="title is-3">Matting</h2>
+    <section class="section">
+        <div class="container is-max-desktop">
         <div class="columns is-centered">
-          <div class="column content">
-            <p>
-              As a byproduct of our method, we can also solve the matting problem by ignoring
-              samples that fall outside of a bounding box during rendering.
-            </p>
-            <video id="matting-video" controls playsinline height="100%">
-              <source src="./static/videos/matting.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <!--/ Matting. -->
-
-    <!-- Animation. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Animation</h2>
-
-        <!-- Interpolating. -->
-        <h3 class="title is-4">Interpolating states</h3>
-        <div class="content has-text-justified">
-          <p>
-            We can also animate the scene by interpolating the deformation latent codes of two input
-            frames. Use the slider here to linearly interpolate between the left frame and the right
-            frame.
-          </p>
-        </div>
-        <div class="columns is-vcentered interpolation-panel">
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_start.jpg"
-                 class="interpolation-image"
-                 alt="Interpolate start reference image."/>
-            <p>Start Frame</p>
-          </div>
-          <div class="column interpolation-video-column">
-            <div id="interpolation-image-wrapper">
-              Loading...
+            <div class="column is-four-fifths">
+            <div class="columns is-centered has-text-centered">
+            <h2 class="title is-4">Visualization</h2>
             </div>
-            <input class="slider is-fullwidth is-large is-info"
-                   id="interpolation-slider"
-                   step="1" min="0" max="100" value="0" type="range">
-          </div>
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_end.jpg"
-                 class="interpolation-image"
-                 alt="Interpolation end reference image."/>
-            <p class="is-bold">End Frame</p>
-          </div>
+            <p> Visual Comparison under unconstrained settings. Image pattern-driven methods, e.g. RoMa, finds diverse matches
+                across many planes; however, matches may be false negatives on two sides of the building. Geometry-driven methods are better
+                at matching planes. This can lead to homography if a confident plane dominates, e.g., when Aerial-MASt3R matches the wrong signs in
+                Urban with high confidence. SPIDER combines both approaches and produces diverse and accurate matches.</p>
+            <img src="./static/images/vis_example.png"/>
+            
         </div>
-        <br/>
-        <!--/ Interpolating. -->
-
-        <!-- Re-rendering. -->
-        <h3 class="title is-4">Re-rendering the input video</h3>
-        <div class="content has-text-justified">
-          <p>
-            Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
-            viewpoint such as a stabilized camera by playing back the training deformations.
-          </p>
         </div>
-        <div class="content has-text-centered">
-          <video id="replay-video"
-                 controls
-                 muted
-                 preload
-                 playsinline
-                 width="75%">
-            <source src="./static/videos/replay.mp4"
-                    type="video/mp4">
-          </video>
+    </section>
+
+    <!-- <section class="section">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Method Overview</h2>
+                    <div class="content has-text-centered">
+                        <div>
+                            <img src="./static/images/method1_2-min.jpg" alt="Reconstruction"
+                                class="blend-img-background center-image" width="80%" loading="lazy" />
+                        </div>
+                        <div class="content has-text-justified">
+                            <p>
+                                Given a sequence of images as input, our method performs online dense 3D reconstruction.
+
+                                At the core of our method is a state representation that keeps updating as each new
+                                observation
+                                comes in.
+
+                                Given the current image, we first use a vit encoder to encode it into token
+                                representations.
+                                The image tokens then interact with the state tokens through a joint process of state
+                                update
+                                and
+                                state readout. The final outputs from state readout are the pointmaps and camera
+                                parameters
+                                for
+                                the current observation. At the same time, the state update module incorporates the
+                                current
+                                observation to update the state.
+
+                                We repeat the process for every image, and their outputs accumulate into dense scene
+                                reconstruction over time.
+                            </p>
+                        </div>
+
+                        <div>
+                            <img src="./static/images/method2_2-min.jpg" alt="Inference"
+                                class="blend-img-background center-image" width="80%" loading="lazy" />
+                        </div>
+                        <div class="level-set has-text-justified">
+                            <p>
+                                Not only can our method reconstructs the scene given image observations, it can also
+                                infer
+                                new
+                                structures unseen by the input images.
+                                Given a query camera as shown as the blue camera, we use its raymap to query the current
+                                state
+                                to read out its corresponding point map.
+                                Adding this inferred point map to the existing reconstruction makes the reconstruction
+                                more
+                                complete.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!--/ Re-rendering. -->
+    </section> -->
 
-      </div>
-    </div>
-    <!--/ Animation. -->
-
-
-    <!-- Concurrent Work. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Related Links</h2>
-
-        <div class="content has-text-justified">
-          <p>
-            There's a lot of excellent work that was introduced around the same time as ours.
-          </p>
-          <p>
-            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
-          </p>
-          <p>
-            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
-            both use deformation fields to model non-rigid scenes.
-          </p>
-          <p>
-            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
-          </p>
-          <p>
-            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
-          </p>
+    <section class="section">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths"><br><br>
+                    <h2 class="title is-3">Acknowledgements</h2>
+                    <div class="content has-text-justified">
+                        This research is based upon work supported by the Office of the Director of National Intelligence
+                        (ODNI), Intelligence Advanced Research Projects Activity (IARPA), via IARPA R&D Contract
+                        No. 140D0423C0076. The views and conclusions contained herein are those of the authors and
+                        should not be interpreted as necessarily representing the official policies or endorsements, either
+                        expressed or implied, of the ODNI, IARPA, or the U.S. Government. The U.S. Government is
+                        authorized to reproduce and distribute reprints for Governmental purposes notwithstanding any
+                        copyright annotation thereon.
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <!--/ Concurrent Work. -->
+    </section>
 
-  </div>
-</section>
+    <br>
 
 
-<section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@article{park2021nerfies,
-  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
-  title     = {Nerfies: Deformable Neural Radiance Fields},
-  journal   = {ICCV},
-  year      = {2021},
-}</code></pre>
-  </div>
-</section>
 
 
-<footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <a class="icon-link"
-         href="./static/videos/nerfies_paper.pdf">
-        <i class="fas fa-file-pdf"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-          <p>
-            This website is licensed under a <a rel="license"
-                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-          <p>
-            This means you are free to borrow the <a
-              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
-            we just ask that you link back to this page in the footer.
-            Please remember to remove the analytics code included in the header of the website which
-            you do not want on your website.
-          </p>
+    <section class="section" id="BibTeX">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-justified">
+                <div class="column is-four-fifths">
+
+                    <h2 class="title">BibTeX</h2>
+                    <pre><code>
+    @article{shao2025spider,
+        title={SPIDER: Spatial Image CorresponDence Estimator for Robust Calibration},
+        author={Shao, Zhimin and Yadav, Abhay and Chellappa, Rama and Peng, Cheng},
+        journal={arXiv preprint arXiv:2511.17750},
+        year={2025}
+        }
+                    </code></pre>
+
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</footer>
+    </section>
+
+
+    <footer class="footer">
+        <div align="center" class="container">
+            <div class="columns is-centered">
+                <div class="content">
+                    Design borrowed from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
 
 </body>
+
 </html>
