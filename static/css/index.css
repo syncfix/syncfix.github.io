@@ -30,6 +30,16 @@ body {
   .teaser {
     font-family: 'Google Sans', sans-serif;
   }
+
+  .teaser-figure-videos {
+    width: 100%;
+  }
+
+  .teaser-figure-video {
+    width: 100%;
+    border-radius: 5px;
+    display: block;
+  }
   
   
   .publication-title {
@@ -219,3 +229,79 @@ body {
     font-size: 0;
     box-sizing: border-box;
 }
+
+  .teaser-wipe-outer {
+    width: 100%;
+    max-width: min(88vw, 720px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .teaser-wipe {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #000;
+  }
+
+  .teaser-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #000;
+    z-index: 1;
+  }
+
+  .teaser-overlay-difix {
+    z-index: 2;
+  }
+
+  .teaser-overlay-syncfix {
+    z-index: 3;
+  }
+
+  .teaser-overlay {
+    will-change: clip-path;
+  }
+
+  .teaser-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #fff;
+    z-index: 5;
+    pointer-events: none;
+    will-change: left;
+  }
+
+  .teaser-label {
+    position: absolute;
+    top: 14px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 14px;
+    line-height: 1;
+    z-index: 6;
+    pointer-events: none;
+  }
+
+  .teaser-label-left {
+    left: 14px;
+  }
+
+  .teaser-label-right {
+    right: 14px;
+  }
+
+  .teaser-caption {
+    margin-top: 0.9rem;
+  }

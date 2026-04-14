@@ -425,12 +425,74 @@
         </div>
     </section>
 
-    <section class="hero teaser">
+    <!-- <section class="hero teaser">
         <div class="container is-max-desktop">
           <div class="hero-body">
-            <img src="./static/images/teaser_figure.png"
-              class="interpolation-image"
-              alt="Interpolate start reference image."/>
+            <div class="teaser-debug-grid">
+              <video controls muted playsinline preload="metadata" width="100%">
+                <source src="./static/videos/3dgs_h264.mp4" type="video/mp4">
+              </video>
+              <video controls muted playsinline preload="metadata" width="100%">
+                <source src="./static/videos/difix_h264.mp4" type="video/mp4">
+              </video>
+              <video controls muted playsinline preload="metadata" width="100%">
+                <source src="./static/videos/syncfix_h264.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+      </section> -->
+
+      <section class="hero teaser">
+        <div class="container is-max-desktop">
+          <div class="hero-body">
+            <div class="teaser-wipe-outer">
+              <div class="teaser-wipe" id="teaser-wipe">
+                <video id="teaser-video-3dgs" class="teaser-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/videos/3dgs_h264.mp4" type="video/mp4">
+                </video>
+
+                <video id="teaser-video-difix" class="teaser-video teaser-overlay teaser-overlay-difix" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/videos/difix_h264.mp4" type="video/mp4">
+                </video>
+
+                <video id="teaser-video-syncfix" class="teaser-video teaser-overlay teaser-overlay-syncfix" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/videos/syncfix_h264.mp4" type="video/mp4">
+                </video>
+
+                <div class="teaser-divider" id="teaser-divider"></div>
+
+                <div class="teaser-label teaser-label-left" id="teaser-label-left">SyncFix</div>
+                <div class="teaser-label teaser-label-right" id="teaser-label-right">3DGS</div>
+              </div>
+            </div>
+            <h2 class="subtitle has-text-centered teaser-caption">
+              Independent diffusion refinement (DifiX3D+) processes each view separately, leading to inconsistent geometry across views.
+              SyncFix instead refines views jointly, enforcing cross-view agreement during denoising and producing stable 3D structure.
+            </h2>
+          </div>
+        </div>
+      </section>
+    <!-- <section class="hero teaser">
+        <div class="container is-max-desktop">
+          <div class="hero-body">
+            <div class="columns is-multiline is-centered is-variable is-2 teaser-figure-videos">
+              <div class="column is-12-mobile is-4-tablet">
+                <video class="teaser-figure-video" controls autoplay muted loop playsinline>
+                  <source src="./static/videos/3dgs_h264.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column is-12-mobile is-4-tablet">
+                <video class="teaser-figure-video" controls autoplay muted loop playsinline>
+                  <source src="./static/videos/difix_h264.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column is-12-mobile is-4-tablet">
+                <video class="teaser-figure-video" controls autoplay muted loop playsinline>
+                  <source src="./static/videos/syncfix_h264.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
             <h2 class="subtitle has-text-centered">
                 Independent diffusion refinement (DifiX3D+) processes each view separately, leading to inconsistent geometry across views (see table; bottom panel and highlighted regions above). 
                 SyncFix instead refines all views jointly, enforcing cross-view agreement during denoising and producing stable 3D structure.
@@ -439,7 +501,7 @@
       
       
         </div>
-      </section>
+      </section> -->
 
       <section class="section hero is-light">
         <div class="container is-max-desktop">
