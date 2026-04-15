@@ -94,8 +94,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const SEGMENTS = 4;
   const HIDE_LEFT = 'inset(0 0 0 100%)';
   const HIDE_RIGHT = 'inset(0 100% 0 0)';
+  const SYNC_DRIFT_THRESHOLD = 0.12;
+  const DRIFT_SYNC_INTERVAL_MS = 300;
   let initialized = false;
   let rafId = 0;
+  let lastDriftSyncAt = 0;
 
   function setClip(video, clipValue) {
     video.style.clipPath = clipValue;
@@ -109,16 +112,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  function isSyncReady() {
+    return (
+      base.readyState >= 1 &&
+      isFinite(base.duration) &&
+      base.duration > 0 &&
+      overlays.every((video) => video.readyState >= 1)
+    );
+  }
+
   function syncPlayback(force) {
+    if (!isSyncReady()) return;
     const t = base.currentTime;
     overlays.forEach((video) => {
-      if (video.readyState < 1) return;
-      if (force || Math.abs(video.currentTime - t) > 0.05) {
+      if (force || Math.abs(video.currentTime - t) > SYNC_DRIFT_THRESHOLD) {
         try {
           video.currentTime = t;
         } catch (_) {}
       }
     });
+  }
+
+  function syncPlaybackThrottled() {
+    const now = performance.now();
+    if (now - lastDriftSyncAt < DRIFT_SYNC_INTERVAL_MS) return;
+    lastDriftSyncAt = now;
+    syncPlayback(false);
   }
 
   function motionState(progress) {
@@ -184,7 +203,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function rafTick() {
-    syncPlayback(false);
     updateWipe();
     if (!base.paused) {
       rafId = requestAnimationFrame(rafTick);
@@ -196,8 +214,21 @@ document.addEventListener('DOMContentLoaded', function () {
     rafId = requestAnimationFrame(rafTick);
   }
 
+  function tryResumePlayback(forceSync) {
+    if (!initialized) return;
+    if (forceSync) syncPlayback(true);
+    videos.forEach(safePlay);
+    if (!base.paused) startRaf();
+  }
+
+  function recoverFromStall() {
+    syncPlayback(true);
+    tryResumePlayback(false);
+    updateWipe();
+  }
+
   function initialize() {
-    if (initialized || base.readyState < 1 || !isFinite(base.duration) || base.duration <= 0) return;
+    if (initialized || !isSyncReady()) return;
     initialized = true;
 
     setClip(difix, HIDE_LEFT);
@@ -206,10 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
     difix.style.zIndex = '2';
     syncPlayback(true);
     updateWipe();
-    videos.forEach(safePlay);
-    if (!base.paused) {
-      startRaf();
-    }
+    tryResumePlayback(false);
   }
 
   videos.forEach((video) => {
@@ -223,10 +251,8 @@ document.addEventListener('DOMContentLoaded', function () {
   difix.style.zIndex = '2';
 
   base.addEventListener('play', function () {
-    syncPlayback(true);
-    videos.forEach(safePlay);
+    tryResumePlayback(true);
     updateWipe();
-    startRaf();
   });
 
   base.addEventListener('pause', function () {
@@ -234,10 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   base.addEventListener('timeupdate', function () {
-    if (base.paused) {
-      syncPlayback(false);
-      updateWipe();
-    }
+    syncPlaybackThrottled();
+    updateWipe();
   });
 
   base.addEventListener('seeking', function () {
@@ -255,24 +279,24 @@ document.addEventListener('DOMContentLoaded', function () {
     updateWipe();
   });
 
+  videos.forEach((video) => {
+    ['waiting', 'stalled', 'error'].forEach((eventName) => {
+      video.addEventListener(eventName, recoverFromStall);
+    });
+  });
+
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden && initialized) {
-      syncPlayback(true);
-      videos.forEach(safePlay);
+      tryResumePlayback(true);
       updateWipe();
-      if (!base.paused) startRaf();
     }
   });
 
-  document.addEventListener(
-    'pointerdown',
-    function () {
-      if (!initialized) return;
-      syncPlayback(true);
-      videos.forEach(safePlay);
-    },
-    { once: true }
-  );
+  ['pointerdown', 'touchstart', 'keydown'].forEach((eventName) => {
+    document.addEventListener(eventName, function () {
+      tryResumePlayback(true);
+    });
+  });
 
   initialize();
 });
