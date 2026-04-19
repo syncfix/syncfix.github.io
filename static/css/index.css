@@ -305,3 +305,23 @@ body {
   .teaser-caption {
     margin-top: 0.9rem;
   }
+
+  .bibtex {
+    margin: 0;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    overflow-x: visible;
+  }
+
+  .bibtex code {
+    display: block;
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: #363636;
+    background: #fafafa;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+  }
