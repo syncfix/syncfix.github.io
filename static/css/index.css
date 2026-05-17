@@ -325,3 +325,37 @@ body {
     border: 1px solid #dbdbdb;
     border-radius: 6px;
   }
+
+/* GenWildSplat comparison section: start */
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.comparison-card {
+  background: #ffffff;
+  border: 1px solid #dbdbdb;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.06);
+}
+
+.comparison-video {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  background: #000000;
+}
+
+.comparison-caption,
+.comparison-note {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+.comparison-note {
+  font-style: italic;
+}
+/* GenWildSplat comparison section: end */
