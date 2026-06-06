@@ -360,3 +360,90 @@ body {
   font-style: italic;
 }
 /* GenWildSplat comparison section: end */
+
+/* GSFixer comparison section: start */
+.gsfixer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.gsfixer-pair-row {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #dbdbdb;
+  border-radius: 14px;
+  padding: 1.1rem;
+  box-shadow: 0 0.2rem 0.9rem rgba(0, 0, 0, 0.05);
+}
+
+.gsfixer-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+
+.gsfixer-row-header .title {
+  margin-bottom: 0;
+}
+
+.gsfixer-sync-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.gsfixer-sync-controls .button {
+  min-width: 120px;
+}
+
+.gsfixer-video-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.gsfixer-video-card {
+  width: 100%;
+}
+
+.gsfixer-video-label {
+  margin-bottom: 0.45rem;
+  font-size: 0.98rem;
+  color: #363636;
+}
+
+.gsfixer-video {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  background: #f5f5f5;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.gsfixer-caption,
+.gsfixer-note {
+  margin-top: 0.8rem;
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+.gsfixer-note {
+  font-style: italic;
+}
+
+@media screen and (max-width: 768px) {
+  .gsfixer-row-header {
+    align-items: flex-start;
+  }
+
+  .gsfixer-video-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* GSFixer comparison section: end */
