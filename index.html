@@ -673,8 +673,22 @@
           Please refer to the <a href="https://genwildsplat.github.io/">GenWildSplat project page</a>, <a href="https://arxiv.org/abs/2604.28193">paper</a>, and <a href="https://github.com/Vinayak-VG/GenWildSplat">code repository</a> for details about their method.
         </p>
 
-        <div class="comparison-list" style="margin-top: 24px;">
-          <div class="comparison-row">
+        <div class="comparison-tabs tabs is-toggle is-centered is-small" style="margin-top: 24px;">
+          <ul>
+            <li class="is-active"><a data-gws-target="gws-scene-1">National Theatre (Costa Rica)</a></li>
+            <li><a data-gws-target="gws-scene-2">Oidor Chapel</a></li>
+            <li><a data-gws-target="gws-scene-3">Old Synagogue (Tarnów)</a></li>
+            <li><a data-gws-target="gws-scene-4">Olisov Palace</a></li>
+            <li><a data-gws-target="gws-scene-5">Osgoode Hall</a></li>
+            <li><a data-gws-target="gws-scene-6">Our Lady of Sorrows</a></li>
+            <li><a data-gws-target="gws-scene-7">Banca Commerciale Italiana</a></li>
+            <li><a data-gws-target="gws-scene-8">Casa de la Comunidad</a></li>
+            <li><a data-gws-target="gws-scene-9">Palacio Episcopal</a></li>
+          </ul>
+        </div>
+
+        <div class="comparison-list">
+          <div class="comparison-row is-active" id="gws-scene-1">
             <h3 class="title is-5">National Theatre of Costa Rica right</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/national_theatre_of_costa_rica_right.mp4" type="video/mp4">
@@ -684,7 +698,7 @@
               <strong>Left:</strong> GenWildSplat &nbsp; | &nbsp; <strong>Right:</strong> SyncFix
             </p>
           </div>
-          <div class="comparison-row">
+          <div class="comparison-row" id="gws-scene-2">
             <h3 class="title is-5">Oidor Chapel (Alcalá de Henares)</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/oidor_chapel_alcala_de_henares.mp4" type="video/mp4">
@@ -694,7 +708,7 @@
               <strong>Left:</strong> GenWildSplat &nbsp; | &nbsp; <strong>Right:</strong> SyncFix
             </p>
           </div>
-          <div class="comparison-row">
+          <div class="comparison-row" id="gws-scene-3">
             <h3 class="title is-5">Old Synagogue in Tarnów</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/old_synagogue_in_tarnow.mp4" type="video/mp4">
@@ -704,7 +718,7 @@
               <strong>Left:</strong> GenWildSplat &nbsp; | &nbsp; <strong>Right:</strong> SyncFix
             </p>
           </div>
-          <div class="comparison-row">
+          <div class="comparison-row" id="gws-scene-4">
             <h3 class="title is-5">Olisov Palace</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/olisov_palace.mp4" type="video/mp4">
@@ -714,7 +728,7 @@
               <strong>Left:</strong> GenWildSplat &nbsp; | &nbsp; <strong>Right:</strong> SyncFix
             </p>
           </div>
-          <div class="comparison-row">
+          <div class="comparison-row" id="gws-scene-5">
             <h3 class="title is-5">Osgoode Hall</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/osgoode_hall.mp4" type="video/mp4">
@@ -724,7 +738,7 @@
               <strong>Left:</strong> GenWildSplat &nbsp; | &nbsp; <strong>Right:</strong> SyncFix
             </p>
           </div>
-          <div class="comparison-row">
+          <div class="comparison-row" id="gws-scene-6">
             <h3 class="title is-5">Our Lady of Sorrows church in Rybnik above ground</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/our_lady_of_sorrows_church_in_rybnik_above_ground.mp4" type="video/mp4">
@@ -734,7 +748,7 @@
               <strong>Left:</strong> GenWildSplat &nbsp; | &nbsp; <strong>Right:</strong> SyncFix
             </p>
           </div>
-          <div class="comparison-row">
+          <div class="comparison-row" id="gws-scene-7">
             <h3 class="title is-5">Palace of the Banca Commerciale Italiana (Milan)</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/palace_of_the_banca_commerciale_italiana_milan.mp4" type="video/mp4">
@@ -744,7 +758,7 @@
               <strong>Left:</strong> GenWildSplat &nbsp; | &nbsp; <strong>Right:</strong> SyncFix
             </p>
           </div>
-          <div class="comparison-row">
+          <div class="comparison-row" id="gws-scene-8">
             <h3 class="title is-5">Palacio de la Casa de la Comunidad de Teruel</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/palacio_de_la_casa_de_la_comunidad_de_teruel.mp4" type="video/mp4">
@@ -754,7 +768,7 @@
               <strong>Left:</strong> GenWildSplat &nbsp; | &nbsp; <strong>Right:</strong> SyncFix
             </p>
           </div>
-          <div class="comparison-row">
+          <div class="comparison-row" id="gws-scene-9">
             <h3 class="title is-5">Palacio Episcopal de Málaga</h3>
             <video class="comparison-video-row" controls muted loop playsinline preload="metadata">
               <source src="./static/videos/genwildsplat/palacio_episcopal_de_malaga.mp4" type="video/mp4">
@@ -1052,6 +1066,46 @@ GSFixer comparison section: end -->
     </footer>
 
 
+
+<!-- GenWildSplat scene tabs script: start -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const section = document.getElementById("genwildsplat-comparison");
+  if (!section) return;
+
+  const tabs = Array.from(section.querySelectorAll(".comparison-tabs li"));
+  const rows = Array.from(section.querySelectorAll(".comparison-row"));
+  if (!tabs.length || !rows.length) return;
+
+  function activate(targetId) {
+    tabs.forEach(function (tab) {
+      const link = tab.querySelector("a");
+      tab.classList.toggle("is-active", link && link.dataset.gwsTarget === targetId);
+    });
+
+    rows.forEach(function (row) {
+      const isActive = row.id === targetId;
+      row.classList.toggle("is-active", isActive);
+
+      if (!isActive) {
+        const video = row.querySelector("video");
+        if (video) video.pause();
+      }
+    });
+  }
+
+  tabs.forEach(function (tab) {
+    const link = tab.querySelector("a");
+    if (!link) return;
+
+    link.addEventListener("click", function (event) {
+      event.preventDefault();
+      activate(link.dataset.gwsTarget);
+    });
+  });
+});
+</script>
+<!-- GenWildSplat scene tabs script: end -->
 
 <!-- GSFixer synchronized video script: start -->
 <script>

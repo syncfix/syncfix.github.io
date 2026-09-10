@@ -333,6 +333,18 @@ body {
   gap: 2rem;
 }
 
+.comparison-tabs ul {
+  flex-wrap: wrap;
+  justify-content: center;
+  border-bottom: none;
+  row-gap: 0.4rem;
+}
+
+.comparison-tabs.is-toggle li a {
+  border-radius: 6px;
+  margin: 0 0.15rem;
+}
+
 .comparison-row {
   width: 100%;
   background: #ffffff;
@@ -340,6 +352,14 @@ body {
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.06);
+}
+
+.comparison-list .comparison-row {
+  display: none;
+}
+
+.comparison-list .comparison-row.is-active {
+  display: block;
 }
 
 .comparison-video-row {
